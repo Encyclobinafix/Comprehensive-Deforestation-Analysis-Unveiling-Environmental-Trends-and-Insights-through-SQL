@@ -138,7 +138,8 @@ _CODE:_  ✍️
 
 _CODE:_  ✍️
 
-      SELECT R.country_name, income_group, ROUND(AVG(total_area_sq_mi), 2) AS AVG_AREA FROM regions R JOIN land_area L on R.country_name = L.country_name
+      SELECT R.country_name, income_group, ROUND(AVG(total_area_sq_mi), 2) AS AVG_AREA FROM regions R 
+      JOIN land_area L on R.country_name = L.country_name
       GROUP BY R.country_name, region, income_group HAVING income_group = 'Upper middle income'
       ORDER BY AVG_AREA DESC;
 
@@ -147,7 +148,8 @@ _CODE:_  ✍️
 
 _CODE:_  ✍️
 
-      SELECT R.country_name, income_group, ROUND(AVG(total_area_sq_mi), 2) AS AVG_AREA FROM regions R JOIN land_area L on R.country_name = L.country_name
+      SELECT R.country_name, income_group, ROUND(AVG(total_area_sq_mi), 2) AS AVG_AREA FROM regions R 
+      JOIN land_area L on R.country_name = L.country_name
       GROUP BY R.country_name, region, income_group HAVING income_group != 'Upper middle income'
       ORDER BY AVG_AREA DESC;
 
@@ -163,7 +165,8 @@ _CODE:_  ✍️
 
 _CODE:_  ✍️
 
-    SELECT F.country_name, income_group, SUM(forest_area_sqkm) AS TOTAL_AREA FROM forest_area F JOIN regions R ON F.country_code = R.country_code 
+    SELECT F.country_name, income_group, SUM(forest_area_sqkm) AS TOTAL_AREA FROM forest_area F 
+    JOIN regions R ON F.country_code = R.country_code 
     GROUP BY F.country_name, income_group HAVING income_group = 'High income' ORDER BY TOTAL_AREA DESC;
 
 * I compared the result to the other income groups by selecting income groups that are NOT in the 'hig income' category
@@ -171,7 +174,8 @@ _CODE:_  ✍️
 
 _CODE:_  ✍️
 
-    SELECT F.country_name, income_group, SUM(forest_area_sqkm) AS TOTAL_AREA FROM forest_area F JOIN regions R ON F.country_code = R.country_code 
+    SELECT F.country_name, income_group, SUM(forest_area_sqkm) AS TOTAL_AREA FROM forest_area F 
+    JOIN regions R ON F.country_code = R.country_code 
     GROUP BY F.country_name, income_group HAVING income_group <> 'High income' ORDER BY TOTAL_AREA DESC;
 
 ![](Ques_4.png)
@@ -189,7 +193,8 @@ _CODE:_  ✍️
 
     SELECT *
     FROM (
-        SELECT R.country_name, region, ROUND(SUM(forest_area_sqkm), 2) AS TOTAL_FOREST_AREA, DENSE_RANK() OVER(PARTITION BY region ORDER BY SUM(forest_area_sqkm) DESC) AS HIGHEST_FOREST_RANK 
+        SELECT R.country_name, region, ROUND(SUM(forest_area_sqkm), 2) AS TOTAL_FOREST_AREA, DENSE_RANK() 
+        OVER(PARTITION BY region ORDER BY SUM(forest_area_sqkm) DESC) AS HIGHEST_FOREST_RANK 
         FROM regions R 
         JOIN forest_area F ON R.country_name = F.country_name 
         GROUP BY R.country_name, region
@@ -202,7 +207,8 @@ _CODE:_  ✍️
 
     WITH RankedForests AS 
     (
-        SELECT R.country_name, region, ROUND(SUM(forest_area_sqkm), 2) AS TOTAL_FOREST_AREA, DENSE_RANK() OVER(PARTITION BY region ORDER BY SUM(forest_area_sqkm) DESC) AS HIGHEST_FOREST_RANK
+        SELECT R.country_name, region, ROUND(SUM(forest_area_sqkm), 2) AS TOTAL_FOREST_AREA, DENSE_RANK() 
+        OVER(PARTITION BY region ORDER BY SUM(forest_area_sqkm) DESC) AS HIGHEST_FOREST_RANK
         FROM regions R JOIN forest_area F ON R.country_name = F.country_name GROUP BY R.country_name, region
     )
     SELECT *
@@ -213,10 +219,102 @@ _CODE:_  ✍️
 * An ORDER BY clause was added at the outer query to sort the result in descending order of the total forest area.
 * The above 2 queries returned the same result.
 * There are 8 countries acrross 8 different regions
-* We can notice the name "World" in both the country_name and region columns. This classification is unclear however, it was retained.
-* Clarifications on what this represents and if it is important would be made from the database engineer.
+* We can notice the name "World" in both the country_name and region columns. This classification is unclear, however, it was retained.
+* Clarifications on what this represents and if it is important in the analysis should be made from the database engineer.
 
 ![](Ques_5.png)
 
 
+##  More analytical questions to uncover more insights.
 
+### Question 6: Show the bottom 5 countries for each year along with the corresponding region, having the smallest land area in sq miles.
+* I used the ROUND, SUM, AS, JOIN, ON, DESC, GROUP BY, ORDER BY, ROW_NUMBER, OVER, PARTITION BY, BETWEEN, AND operators to answer this question.
+* We can see that the countries ranking at the bottom are consistent every year.
+* The bottom 5 countries having the smallest land area are Monaco, Gilbraltar, Nauru, Tuvalu, Macoa SAR China with Monaco having the least land area of 0.77sqmi
+
+_CODE:_  ✍️
+
+    SELECT * FROM 
+    (SELECT R.country_name, region, year, ROUND(SUM(total_area_sq_mi), 2) AS TOTAL_LAND_AREA, ROW_NUMBER() 
+    		OVER(PARTITION BY year ORDER BY SUM(total_area_sq_mi) ASC) AS BOTTOM_LAND_RANK
+        FROM regions R JOIN land_area L ON R.country_code = L.country_code GROUP BY R.country_name, region, year) AS BottomRanked
+    		WHERE BOTTOM_LAND_RANK BETWEEN 1 AND 5 ORDER BY year, BOTTOM_LAND_RANK;
+
+![](Ques_6_A.png)
+
+* Comparing with the top 5 countries having the largest land area.
+* Here too, the countries ranking at the top are consistent every year.
+* The top 5 countries having the largest land area are World, Russian Fedearion, China, United States and Canada.
+* World consitently topped the list having a larger land area than other countries.
+
+_CODE:_  ✍️
+
+    	SELECT * FROM 
+    (SELECT R.country_name, region, year, ROUND(SUM(total_area_sq_mi), 2) AS TOTAL_LAND_AREA, DENSE_RANK() 
+    		OVER(PARTITION BY year ORDER BY SUM(total_area_sq_mi) DESC) AS TOP_LAND_RANK
+        FROM regions R JOIN land_area L ON R.country_code = L.country_code GROUP BY R.country_name, region, year) AS TopRanked
+    		WHERE TOP_LAND_RANK BETWEEN 1 AND 5 ORDER BY year, TOP_LAND_RANK;
+
+![](Ques_6_B.png)
+
+
+### Question 7: Of the land area possessed by the top 5 ranking countries what prcentage is predominantly forest area?
+* The percentage of land areas that is dominated by forest was ccalculated.
+* It was observed that for the country Russian Federation, we had 128.24% (which appears implausible).
+* This provokes the question: Is the "land area" in this dataset representative of the total land area that each country has?  
+
+_CODE:_  ✍️
+
+    SELECT 
+        country_name, FOREST_AREA, LAND_AREA,
+        ROUND((FOREST_AREA / LAND_AREA) * 100, 2) AS FOREST_PERCENTAGE
+    FROM (
+        SELECT 
+            R.country_name, 
+            ROUND(SUM(forest_area_sqkm), 0) AS FOREST_AREA, 
+            ROUND(SUM(total_area_sq_mi), 0) AS LAND_AREA,
+            ROW_NUMBER() OVER (ORDER BY SUM(total_area_sq_mi) DESC) AS TOP_LAND_RANK
+        FROM 
+            regions R 
+            JOIN land_area L ON R.country_code = L.country_code 
+            JOIN forest_area F ON R.country_code = F.country_code 
+        GROUP BY R.country_name
+    ) AS LAND_FOREST_AREA
+    WHERE TOP_LAND_RANK <= 5
+    ORDER BY 
+        LAND_AREA DESC;
+
+![](Ques_7.png)
+
+
+### Question 8: What are the top 10 countries with the largest forest areas?
+* The top 10 countries having the largest forest areas are World, Russian Fedearion, Brazil, Canada, United States, China, Congo Dem. Rep., Australia, Indonesia, and Peru.
+* World had the largest forest area.
+
+_CODE:_  ✍️
+
+    SELECT *
+    FROM (
+        SELECT TOP 10
+            R.country_name, 
+            ROUND(SUM(forest_area_sqkm), 2) AS TOTAL_FOREST_AREA, 
+            ROW_NUMBER() OVER (ORDER BY SUM(forest_area_sqkm) DESC) AS TOP_FOREST_RANK
+        FROM regions R 
+        JOIN forest_area F ON R.country_code = F.country_code 
+        GROUP BY R.country_name
+    ) AS TopRanked
+    WHERE TOP_FOREST_RANK BETWEEN 1 AND 10
+    ORDER BY TOP_FOREST_RANK, TOTAL_FOREST_AREA DESC;
+
+![](Ques_7.png)
+
+## Conclusion:
+
+* With the analysis carried out, I was able to answer key questions that could provide insights into possible deforestaion projects.
+* Some countries possess a large land and forest area while others have very little. If we intend to clear the forest areas to make more room for land for infrastructural purposes, this insight can help create the right perspective and direction.
+* It could be observed that the land area stayed consistent across all years.
+*  With World, Russian Fedearion, Brazil, Canada, and United States having large forest areas, expansions for buildings and infrasstruture can be considered.
+*  Monaco has the least land area of all the countries, 0.77sqmi.
+*  The coutries and regions represented cut accross various income groups and we can dig deeper to identify and relationship between the country's income group and their land mass if any.
+
+Thank you! 😃
