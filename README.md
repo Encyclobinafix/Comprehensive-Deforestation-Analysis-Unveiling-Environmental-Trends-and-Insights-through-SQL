@@ -312,9 +312,11 @@ _CODE:_  ✍️
 
 * With the analysis carried out, I was able to answer key questions that could provide insights into possible deforestaion projects.
 * Some countries possess a large land and forest area while others have very little. If we intend to clear the forest areas to make more room for land for infrastructural purposes, this insight can help create the right perspective and direction.
-* It could be observed that the land area stayed consistent across all years.
-*  With World, Russian Fedearion, Brazil, Canada, and United States having large forest areas, expansions for buildings and infrasstruture can be considered.
+* It was observed that the land area stayed consistent across all years.
+*  With World, Russian Federation, Brazil, Canada, and United States having the top largest forest areas, expansions for buildings and infrasstruture can be considered.
 *  Monaco has the least land area of all the countries, 0.77sqmi.
-*  The coutries and regions represented cut accross various income groups and we can dig deeper to identify and relationship between the country's income group and their land/forest mass if any.
+*  The coutries and regions represented cut accross various income groups and we can dig deeper to identify any relationship(s) between the country's income group and their land/forest mass if any.
+*  The land to forest ratio can be used to make decisions regarding environmental impact and forest management.
+
 
 Thank you! 😃
