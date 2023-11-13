@@ -289,7 +289,7 @@ _CODE:_  ✍️
 
 ### Question 8: What are the top 10 countries with the largest forest areas?
 * The top 10 countries having the largest forest areas are World, Russian Fedearion, Brazil, Canada, United States, China, Congo Dem. Rep., Australia, Indonesia, and Peru.
-* "World" has the largest forest area.
+* "World" ranks top on the list of countries with the largest forest area.
 
 _CODE:_  ✍️
 
