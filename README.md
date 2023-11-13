@@ -245,7 +245,7 @@ _CODE:_  ✍️
 * Comparing with the top 5 countries having the largest land area.
 * Here too, the countries ranking at the top are consistent every year.
 * The top 5 countries having the largest land area are World, Russian Fedearion, China, United States and Canada.
-* World consitently topped the list having a larger land area than other countries.
+* "World" consitently topped the list having a larger land area than other countries.
 
 _CODE:_  ✍️
 
@@ -289,7 +289,7 @@ _CODE:_  ✍️
 
 ### Question 8: What are the top 10 countries with the largest forest areas?
 * The top 10 countries having the largest forest areas are World, Russian Fedearion, Brazil, Canada, United States, China, Congo Dem. Rep., Australia, Indonesia, and Peru.
-* World had the largest forest area.
+* "World" has the largest forest area.
 
 _CODE:_  ✍️
 
@@ -315,6 +315,6 @@ _CODE:_  ✍️
 * It could be observed that the land area stayed consistent across all years.
 *  With World, Russian Fedearion, Brazil, Canada, and United States having large forest areas, expansions for buildings and infrasstruture can be considered.
 *  Monaco has the least land area of all the countries, 0.77sqmi.
-*  The coutries and regions represented cut accross various income groups and we can dig deeper to identify and relationship between the country's income group and their land mass if any.
+*  The coutries and regions represented cut accross various income groups and we can dig deeper to identify and relationship between the country's income group and their land/forest mass if any.
 
 Thank you! 😃
