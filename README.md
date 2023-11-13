@@ -154,7 +154,6 @@ _CODE:_  ✍️
 ![](Ques_3.png)
 
 
-
 ### Question 4: Determine the total forest area in square km for countries in the 'high income' group. Compare result with the rest of the income categories.
 * I used the SUM, AS, JOIN, ON, DESC, GROUP BY, ORDER BY, HAVING, and <> operators to answer this question.
 * The income groups and total forest areas are in two different tables - "Regions" and "Forest_area" tables
@@ -178,7 +177,7 @@ _CODE:_  ✍️
 ![](Ques_4.png)
 
 
-### Question 5:Show countries from each region(continent) having the highest total forest areas. 
+### Question 5: Show countries from each region(continent) having the highest total forest areas. 
 * I used the ROUND, SUM, AS, JOIN, ON, DESC, GROUP BY, ORDER BY, DENSE_RANK, OVER, PARTITION BY, CTE - WITH operators to answer this question.
 * The income groups and total forest areas are in two different tables - "Regions" and "Forest_area" tables
 * To answer this question, I joined the two tables together using a common key "country_name" column which is in both tables
@@ -188,10 +187,15 @@ _CODE:_  ✍️
 **_-- Using subqueries_**
 _CODE:_  ✍️
 
-    SELECT * FROM
-    (SELECT R.country_name, region, ROUND(SUM(forest_area_sqkm), 2) AS TOTAL_FOREST_AREA, DENSE_RANK() OVER(PARTITION BY region ORDER BY SUM(forest_area_sqkm) DESC)             HIGHEST_FOREST_RANK 
-    FROM regions R JOIN forest_area F ON R.country_name = F.country_name GROUP BY R.country_name, region) RankedForests
-        WHERE HIGHEST_FOREST_RANK = 1;
+    SELECT *
+    FROM (
+        SELECT R.country_name, region, ROUND(SUM(forest_area_sqkm), 2) AS TOTAL_FOREST_AREA, DENSE_RANK() OVER(PARTITION BY region ORDER BY SUM(forest_area_sqkm) DESC) AS HIGHEST_FOREST_RANK 
+        FROM regions R 
+        JOIN forest_area F ON R.country_name = F.country_name 
+        GROUP BY R.country_name, region
+    ) RankedForests
+    WHERE HIGHEST_FOREST_RANK = 1
+    ORDER BY TOTAL_FOREST_AREA DESC;
 
 **_-- Using commorn tabke expressions (CTE)_**
 _CODE:_  ✍️
@@ -203,11 +207,16 @@ _CODE:_  ✍️
     )
     SELECT *
     FROM RankedForests
-    WHERE HIGHEST_FOREST_RANK = 1;
+    WHERE HIGHEST_FOREST_RANK = 1
+    ORDER BY TOTAL_FOREST_AREA DESC;
 
+* An ORDER BY clause was added at the outer query to sort the result in descending order of the total forest area.
 * The above 2 queries returned the same result.
-* There are 8 countries acrross 7 different regions
-* We can notice the name "World" in both the country and 
+* There are 8 countries acrross 8 different regions
+* We can notice the name "World" in both the country_name and region columns. This classification is unclear however, it was retained.
+* Clarifications on what this represents and if it is important would be made from the database engineer.
 
 ![](Ques_5.png)
+
+
 
