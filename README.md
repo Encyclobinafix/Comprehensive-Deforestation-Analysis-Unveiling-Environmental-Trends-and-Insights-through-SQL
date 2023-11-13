@@ -306,7 +306,7 @@ _CODE:_  ✍️
     WHERE TOP_FOREST_RANK BETWEEN 1 AND 10
     ORDER BY TOP_FOREST_RANK, TOTAL_FOREST_AREA DESC;
 
-![](Ques_7.png)
+![](Ques_8.png)
 
 ## Conclusion:
 
