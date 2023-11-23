@@ -134,9 +134,28 @@ _CODE:_  ✍️
 * The income groups and total land areas are in two different tables - "Regions" and "land_area" tables
 * To answer this question, I joined the two tables together using a common key "country_name" column which is in both tables
 * I also used aliasing (R and L) to make referecing easier
+* The above question was answered in 2 ways demonstrated below
 * There are 55 countries in the upper middle income group spread across 6 regions
 
-_CODE:_  ✍️
+_CODE 1:_  ✍️
+
+        SELECT
+    income_group,
+    ROUND(AVG(total_area_sq_mi), 2) AS AVG_AREA
+        FROM
+            regions R
+        JOIN
+            land_area L ON R.country_name = L.country_name
+        GROUP BY
+            income_group
+        HAVING
+            income_group <> 'NULL'
+        ORDER BY
+            AVG_AREA DESC;
+
+![](Ques_3b.png)
+            
+_CODE 2:_  ✍️
 
       SELECT R.country_name, income_group, ROUND(AVG(total_area_sq_mi), 2) AS AVG_AREA FROM regions R 
       JOIN land_area L on R.country_name = L.country_name
@@ -161,9 +180,28 @@ _CODE:_  ✍️
 * The income groups and total forest areas are in two different tables - "Regions" and "Forest_area" tables
 * To answer this question, I joined the two tables together using a common key "country_name" column which is in both tables
 * I also used aliasing (R and F) to make referencing easier
+* The above question can be answered in two ways
 * There are 80 countries in the high income group with varying range of forest areas
 
-_CODE:_  ✍️
+
+_CODE 1:_  ✍️
+
+        SELECT 
+        	income_group,
+        	SUM(forest_area_sqkm) AS TOTAL_AREA
+        FROM regions R 
+        JOIN
+        	forest_area F ON R.country_code = F.country_code
+        GROUP BY 
+        	income_group
+        HAVING 
+        	income_group <> 'NULL'
+        ORDER BY
+        	SUM(forest_area_sqkm);
+
+![](Ques_4b.png)
+
+_CODE 2:_  ✍️
 
     SELECT F.country_name, income_group, SUM(forest_area_sqkm) AS TOTAL_AREA FROM forest_area F 
     JOIN regions R ON F.country_code = R.country_code 
